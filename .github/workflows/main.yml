@@ -12,6 +12,10 @@ jobs:
   build-and-publish:
     runs-on: ubuntu-latest
 
+    env:
+      IMAGE_NAME: your-dockerhub-username/your-image-name
+      IMAGE_TAG: ${{ github.sha }}
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -22,5 +26,5 @@ jobs:
         context: .
         file: ./Dockerfile
         push: false
-        tags: ${{ steps.docker_meta.outputs.tags }}
-        labels: ${{ steps.docker_meta.outputs.labels }}
+        tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+        labels: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
