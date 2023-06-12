@@ -6,6 +6,11 @@ on:
       - main
 
 jobs:
+  test:
+    steps:
+    - name: Run test case
+      run: make test
+
   build-and-publish:
     runs-on: ubuntu-latest
 
