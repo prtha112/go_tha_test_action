@@ -10,7 +10,6 @@ COPY go.mod go.sum ./
 # Download the Go module dependencies
 RUN go mod download
 
-
 # Copy the rest of the application source code to the working directory
 COPY . .
 
