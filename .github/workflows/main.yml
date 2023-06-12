@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+env:
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
@@ -18,4 +21,4 @@ jobs:
       with:
         context: .
         file: ./Dockerfile
-        tags: your-dockerhub-username/your-image-name:latest
+        tags: your-dockerhub-username/${{ env.REGISTRY }}:latest
