@@ -46,7 +46,8 @@ jobs:
         fi
 
     - name: Print SemVer version
-      run: echo "SemVer version: ${{ steps.set-version.outputs.version }}"
+      run: |
+        echo "SemVer version: ${{ steps.set-version.outputs.version }}"
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
