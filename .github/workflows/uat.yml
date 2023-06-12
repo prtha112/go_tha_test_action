@@ -6,7 +6,6 @@ on:
     # Link : https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-including-branches-and-tags
     branches:
       # - main A branch named main (refs/heads/main
-      - 'develop/**' # A branch whose name starts with develop/, like develop/10 (refs/heads/develop/10)
       - 'release/**' # A branch whose name starts with releases/, like releases/10 (refs/heads/releases/10)
     # Sequence of patterns matched against refs/tags
     tag:
@@ -39,7 +38,7 @@ jobs:
       id: set-version
       run: |
         branch_name=${GITHUB_REF#refs/heads/}
-        regex='^develop/([0-9]+\.[0-9]+\.[0-9]+)$'
+        regex='^release/([0-9]+\.[0-9]+\.[0-9]+)$'
         if [[ $branch_name =~ $regex ]]; then
           echo "Version: ${BASH_REMATCH[1]}"
           echo "::set-output name=version::${BASH_REMATCH[1]}"

@@ -1,0 +1,63 @@
+name: Build and Publish Docker Image
+
+on:
+  push:
+    # Sequence of patterns matched against refs/heads
+    # Link : https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-including-branches-and-tags
+    branches:
+      # - main A branch named main (refs/heads/main
+      - 'develop/**' # A branch whose name starts with develop/, like develop/10 (refs/heads/develop/10)
+    # Sequence of patterns matched against refs/tags
+    tag:
+      - v2 # A tag named v2 (refs/tags/v2)
+      - v1.* # A tag whose name starts with v1., like v1.9.1 (refs/tags/v1.9.1)
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code # The first step checks out your code
+      uses: actions/checkout@v2
+
+    - name: Run test case
+      run: make test
+
+  build-and-publish:
+    needs: test
+    runs-on: ubuntu-latest
+
+    env:
+      IMAGE_NAME: ${{ github.repository }}
+      IMAGE_TAG: ${{ github.sha }}
+
+    steps:
+    - name: Checkout code # The first step checks out your code
+      uses: actions/checkout@v2
+
+    - name: Set SemVer version
+      id: set-version
+      run: |
+        branch_name=${GITHUB_REF#refs/heads/}
+        regex='^develop/([0-9]+\.[0-9]+\.[0-9]+)$'
+        if [[ $branch_name =~ $regex ]]; then
+          echo "Version: ${BASH_REMATCH[1]}"
+          echo "::set-output name=version::${BASH_REMATCH[1]}"
+          echo "::set-output name=prefix::${BASH_REMATCH[0]}" 
+        fi
+
+    - name: Print SemVer version
+      run: |
+        echo "SemVer version: ${{ steps.set-version.outputs.version }}"
+        echo "SemVer prefix: ${{ steps.set-version.outputs.prefix }}"
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./Dockerfile
+        push: false
+        tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+        labels: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
