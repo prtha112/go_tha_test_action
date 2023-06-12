@@ -21,4 +21,6 @@ jobs:
       with:
         context: .
         file: ./Dockerfile
-        tags: your-dockerhub-username/${{ env.REGISTRY }}:latest
+        push: false
+        tags: ${{ steps.docker_meta.outputs.tags }}
+        labels: ${{ steps.docker_meta.outputs.labels }}
