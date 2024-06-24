@@ -17,3 +17,4 @@ jobs:
     - name: Build the Docker image
       run: |
         echo Hello world
+    - uses: unfor19/install-aws-cli-action@v1.0.7
